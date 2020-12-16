@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".Profile.ProfileEdit">
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="@android:style/Widget.ProgressBar.Large.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="#ffffff" />
+
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <GridLayout
+        android:id="@+id/grid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill"
+        android:alignmentMode="alignMargins"
+        android:columnCount="3"
+        android:columnOrderPreserved="false"
+        android:padding="10dp"
+        android:rowCount="3"
+        android:useDefaultMargins="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/profile1"
+            android:layout_width="105dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_add_to_photos_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+
+        <ImageView
+            android:id="@+id/profile2"
+            android:layout_width="105dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_add_to_photos_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+
+        <ImageView
+            android:id="@+id/profile3"
+            android:layout_width="105dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_add_to_photos_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+
+        <ImageView
+            android:id="@+id/profile4"
+            android:layout_width="105dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_add_to_photos_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+
+        <ImageView
+            android:id="@+id/profile5"
+            android:layout_width="105dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_add_to_photos_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+
+        <ImageView
+            android:id="@+id/profile6"
+            android:layout_width="105dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_add_to_photos_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+
+        <ImageView
+            android:id="@+id/profile7"
+            android:layout_width="105dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_add_to_photos_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+
+        <ImageView
+            android:id="@+id/profile8"
+            android:layout_width="105dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_add_to_photos_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+
+        <ImageView
+            android:id="@+id/profile9"
+            android:layout_width="105dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_add_to_photos_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+
+
+
+    </GridLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="20dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

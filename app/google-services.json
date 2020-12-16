@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1022118316496",
+    "firebase_url": "https://yourcitydate.firebaseio.com",
+    "project_id": "yourcitydate",
+    "storage_bucket": "yourcitydate.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022118316496:android:dd62d47f39d058b78451d5",
+        "android_client_info": {
+          "package_name": "com.yourcitydate.poras.datingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022118316496-vpel956gf1bmspjsphoijtk249i60uau.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yourcitydate.poras.datingapp",
+            "certificate_hash": "63bf9836fc5dc3654828cda0af5f73e295556ec2"
+          }
+        },
+        {
+          "client_id": "1022118316496-lipb850jsg08mk37ink23k4r76mvol3r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqw44-R5JdcQdnlp2zJSOungWPHqKl59Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022118316496-lipb850jsg08mk37ink23k4r76mvol3r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
