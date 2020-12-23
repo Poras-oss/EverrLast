@@ -12,10 +12,10 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
         app:max_visible="4"
         app:min_adapter_stack="6"
         app:rotation_degrees="16" />
@@ -23,52 +23,50 @@
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:columnCount="3"
         android:orientation="horizontal"
         android:padding="10dp"
-        android:columnCount="3"
         app:layout_constraintBottom_toBottomOf="@+id/frame1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
             android:id="@+id/skip"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:background="@drawable/cardnavbg"
-            android:src="@drawable/ic_skip"
-            android:text="Skip"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_gravity="center"
-            android:scaleType="fitCenter"
-            android:padding="15dp"
-            android:elevation="@dimen/cardview_compat_inset_shadow"
             android:layout_margin="10dp"
-             />
+            android:background="@drawable/cardnavbg"
+            android:elevation="@dimen/cardview_compat_inset_shadow"
+            android:padding="15dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_skip"
+            android:text="Skip" />
 
         <ImageButton
             android:id="@+id/dm"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:src="@drawable/ic_dm"
-            android:layout_margin="10dp"
-            android:scaleType="fitCenter"
-            android:padding="10dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
             android:background="@drawable/cardnavbg"
             android:elevation="@dimen/cardview_compat_inset_shadow"
-            />
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_dm" />
 
         <ImageButton
             android:id="@+id/like"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:background="@drawable/cardnavbg"
-            android:src="@drawable/ic_like"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:scaleType="fitCenter"
-            android:padding="15dp"
+            android:background="@drawable/cardnavbg"
             android:elevation="@dimen/cardview_compat_inset_shadow"
-            />
+            android:padding="15dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_like" />
 
     </GridLayout>
 

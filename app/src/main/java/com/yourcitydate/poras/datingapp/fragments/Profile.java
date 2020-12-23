@@ -36,8 +36,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Profile extends Fragment {
     private TextView Name,Age,Bio,likes,dislikes;
-    private ImageView editImage;
-    CircleImageView profilePic;
+    ImageView profilePic;
     private DatabaseReference databaseReference;
     private String UID;
     private ArrayList<String> data;
@@ -67,8 +66,7 @@ public class Profile extends Fragment {
         Name = (TextView)view.findViewById(R.id.NAME);
         Age = (TextView)view.findViewById(R.id.AGE);
         Bio = (TextView)view.findViewById(R.id.BIO);
-        profilePic = (CircleImageView)view.findViewById(R.id.profile_image);
-        editImage = (ImageView)view.findViewById(R.id.editImage);
+        profilePic = (ImageView) view.findViewById(R.id.profile_image);
         dropDownToggle = (ImageButton)view.findViewById(R.id.profileDropDown);
 
         dropDownToggle.setOnClickListener(new View.OnClickListener() {
@@ -78,13 +76,7 @@ public class Profile extends Fragment {
             }
         });
 
-        editImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ProfileEdit.class);
-                startActivity(i);
-            }
-        });
+    
 
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override

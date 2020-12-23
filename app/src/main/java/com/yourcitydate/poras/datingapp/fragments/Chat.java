@@ -30,7 +30,7 @@ import java.util.List;
 
 
 public class Chat extends Fragment {
-     String UID;
+     String UID, ID="blank";
      final String SharedPrefs = "prefs";
      SharedPreferences sharedPreferences;
      DatabaseReference databaseReference, newmsgref;
@@ -59,42 +59,7 @@ public class Chat extends Fragment {
         UID = sharedPreferences.getString("UID","0");
         recyclerView = (RecyclerView)view.findViewById(R.id.userMatches);
        LoadMatchesIds();
-
-       //--------------LISTENING TO NEW MESSAGES---------------------------------------------------------
-
-        newmsgref = FirebaseDatabase.getInstance().getReference().child("Users").child(UID).child("is");
-        newmsgref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists()){
-                    Log.d("NASTYNIGGA", "onChildAdded: "+dataSnapshot.getKey());
-                }
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists()){
-                    Log.d("NASTYNIGGA", "onChildChanged: "+dataSnapshot.getKey());
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+        listenToNewMessages();
     }
 
     private void LoadMatchesIds(){
@@ -115,9 +80,7 @@ public class Chat extends Fragment {
         });
     }
 
-    private void startListeningForNewMessages() {
-        Log.d("NASTYNIGGA", "startListeningForNewMessages: "+UID);
-           }
+
 
 
     private void loadMatches(final String id) {
@@ -147,10 +110,36 @@ public class Chat extends Fragment {
         }
 
     private void setAdapter() {
-        adapter = new MatchedUserAdapter(getActivity(),matches);
+        adapter = new MatchedUserAdapter(getActivity(),matches, ID);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
+    }
+
+    private void listenToNewMessages(){
+        //--------------LISTENING TO NEW MESSAGES---------------------------------------------------------
+
+        newmsgref = FirebaseDatabase.getInstance().getReference().child("Users").child(UID).child("is");
+        newmsgref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                    Log.d("NASTYNIGGA", "NewMessageNotification: "+"ID="+ds.getKey()+ds.getValue().toString());
+
+                    if (ds.getValue().toString().equals("n")){
+                        //Sending the ID into adapter
+                        ID = ds.getKey();
+                        setAdapter();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getActivity(),"Something went wrong!",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

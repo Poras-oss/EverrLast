@@ -28,10 +28,12 @@ import static android.content.Context.MODE_PRIVATE;
 public class MatchedUserAdapter extends RecyclerView.Adapter<MatchedUserAdapter.MatchesViewHolder> {
     List<matchedUsers> users;
     Context context;
+    String id;
 
-    public MatchedUserAdapter(FragmentActivity activity, List<matchedUsers> users) {
+    public MatchedUserAdapter(FragmentActivity activity, List<matchedUsers> users, String id) {
         this.users = users;
         this.context = activity;
+        this.id = id;
     }
 
     @NonNull
@@ -42,15 +44,20 @@ public class MatchedUserAdapter extends RecyclerView.Adapter<MatchedUserAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MatchesViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MatchesViewHolder holder, final int position) {
         holder.textView.setText(users.get(position).getName());
         Glide.with(context)
                 .load(users.get(position).getImage())
                 .into(holder.imageView);
 
+        if (users.get(position).getUid().equals(id)){
+            holder.newmsg.setText("You've got a new message!");
+        }
+
         holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.newmsg.setText("");
                 Intent i = new Intent(context, ChatActivity.class);
                 i.putExtra("OUID",users.get(position).getUid());
                 i.putExtra("image",users.get(position).getImage());
@@ -59,15 +66,7 @@ public class MatchedUserAdapter extends RecyclerView.Adapter<MatchedUserAdapter.
             }
         });
 
-    /* if (!nmsglst.isEmpty()){
-             if (nmsglst.get(position).equals("n")){
-                 holder.newmsg.setText("You have a new message");
-             }else{
-                 holder.newmsg.setText("");
-             }
-
-     }*/
-
+        //Finding the ID in the list and then change it
 
 
     }
