@@ -32,7 +32,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class MatchesAdapter extends ArrayAdapter<MatchModel> {
-    private UnifiedNativeAd nativeAd;
+
 
     public MatchesAdapter(@NonNull Context context, int resource, @NonNull List<MatchModel> items) {
         super(context, resource, items);
@@ -44,13 +44,7 @@ public class MatchesAdapter extends ArrayAdapter<MatchModel> {
 
         MatchModel cards = (MatchModel) getItem(position);
 
-       /* if(position % 3 == 0){
-            if (convertView == null){
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.ad_layout,parent,false);
-            }
-        }else{
 
-        }*/
 
         if (convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item,parent,false);

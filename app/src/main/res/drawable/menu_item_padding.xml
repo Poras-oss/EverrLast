@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:left="10dp" android:right="10dp" android:drawable="@drawable/nav_main_item_bg">
+
+</item>
+</layer-list>

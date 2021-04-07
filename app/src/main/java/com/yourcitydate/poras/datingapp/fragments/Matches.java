@@ -1,5 +1,6 @@
 package com.yourcitydate.poras.datingapp.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -17,6 +21,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,8 +30,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.yourcitydate.poras.datingapp.Adapters.MatchesAdapter;
+import com.yourcitydate.poras.datingapp.DataCaching.MatchesDao;
+import com.yourcitydate.poras.datingapp.DataCaching.MatchesEntity;
+import com.yourcitydate.poras.datingapp.DataCaching.MatchesViewModel;
 import com.yourcitydate.poras.datingapp.Models.MatchModel;
 import com.yourcitydate.poras.datingapp.Profile.profileViewer;
 import com.yourcitydate.poras.datingapp.R;
@@ -40,9 +51,10 @@ import java.util.List;
 public class Matches extends Fragment {
     private MatchesAdapter adapter;
     private List<MatchModel> data_list;
-    int i, numOfReq = 25;
+    int i, numOfReq = 25 , currentAge;
+    static int minAge, maxAge;
     private String currentUserId, currentUserGender;
-    DatabaseReference dref, keyref;
+    DatabaseReference dref, keyref, tokenRef;
     private int likeCounts = 0;
     String lastKey, existingkey = "null", onDestrykey = "null";
     Query reference;
@@ -55,13 +67,26 @@ public class Matches extends Fragment {
     int likeThreshold = 10;
     static final long START_TIME_IN_MILLIS = 3600000;
     long mTimeLeftInMillis;
-    Boolean isTimerRunning = false;
+     Boolean isTimerRunning = false;
+    public static Boolean isOnCurrentFrag = true;
     CountDownTimer countDownTimer;
     long mEndTime;
 
 
     public Matches() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        isOnCurrentFrag = false;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        isOnCurrentFrag = true;
     }
 
 
@@ -72,11 +97,14 @@ public class Matches extends Fragment {
         return inflater.inflate(R.layout.fragment_matches, container, false);
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         sharedPreferences = getActivity().getSharedPreferences(SharedPrefs, getActivity().MODE_PRIVATE);
-        currentUserId = sharedPreferences.getString("UID", "");
+        currentUserId = sharedPreferences.getString("UID", "null");
+        minAge = sharedPreferences.getInt("minAge", 16);
+        maxAge = sharedPreferences.getInt("maxAge", 55);
         dref = FirebaseDatabase.getInstance().getReference().child("Users");
         keyref = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         editor = sharedPreferences.edit();
@@ -85,8 +113,26 @@ public class Matches extends Fragment {
         isTimerRunning = sharedPreferences.getBoolean("timer", false);
         currentUserGender = sharedPreferences.getString("gender", "null");
 
+
+
+
         if (currentUserGender.equals("null")) {
-            getCurrentUserGender();
+            if (!currentUserId.equals("null")) {
+                // -------------------------Token generation for push notifications----------------------------------
+                    FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (task.isSuccessful()){
+                                editor.putString("token",task.getResult().getToken());
+                                editor.commit();
+                                tokenRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("t");
+                                tokenRef.setValue(task.getResult().getToken());
+                            }
+                        }
+                    });
+
+                getCurrentUserGender();
+            }
         } else {
             fetchExistingKey();
         }
@@ -117,51 +163,58 @@ public class Matches extends Fragment {
         //set the listener and the adapter
         flingContainer.setAdapter(adapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+
             @Override
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("LIST", "removed object!");
-                if (likeCounts > likeThreshold) {
-                    //Dialog will open here
-                    limitLikesDialog likesDialog = new limitLikesDialog();
-                    startTimer();
-                    likesDialog.show(getActivity().getSupportFragmentManager(), "nasty dialog");
-                    Toast.makeText(getActivity(), "you are out of swipes", Toast.LENGTH_SHORT).show();
-                    // data_list.remove(0);
-                    data_list.add(data_list.get(0));
-                } else {
-                    data_list.remove(0);
+                if (isOnCurrentFrag){
+                    if (likeCounts > likeThreshold) {
+                        //Dialog will open here
+                        limitLikesDialog likesDialog = new limitLikesDialog();
+                        startTimer();
+                        likesDialog.show(getActivity().getSupportFragmentManager(), "nasty dialog");
+                        Toast.makeText(getActivity(), "you are out of swipes", Toast.LENGTH_SHORT).show();
+                        // data_list.remove(0);
+                        data_list.add(data_list.get(0));
+                    } else {
+                        data_list.remove(0);
+                    }
+
+                    adapter.notifyDataSetChanged();
                 }
 
-                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                MatchModel card = (MatchModel) dataObject;
-                String userID = card.getUID();
-                dref.child(userID).child("connections").child("skip").child(currentUserId).setValue(true);
-                onDestrykey = userID;
-                if (data_list.size() <= 0) {
-                    loadMoreData();
+                if (isOnCurrentFrag) {
+                    MatchModel card = (MatchModel) dataObject;
+                    String userID = card.getUID();
+                    dref.child(userID).child("connections").child("skip").child(currentUserId).setValue(true);
+                    onDestrykey = userID;
+                    if (data_list.size() <= 0) {
+                        loadMoreData();
+                    }
                 }
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
 
-                if (likeCounts > likeThreshold) {
-                    return;
-                } else {
-                    MatchModel card = (MatchModel) dataObject;
-                    String userID = card.getUID();
-                    dref.child(userID).child("connections").child("like").child(currentUserId).setValue(true);
-                    onDestrykey = userID;
-                    isConnectionMatched(userID);
-                    likeCounts++;
+                if (isOnCurrentFrag) {
+                    if (likeCounts > likeThreshold) {
+                        return;
+                    } else {
+                        MatchModel card = (MatchModel) dataObject;
+                        String userID = card.getUID();
+                        dref.child(userID).child("connections").child("like").child(currentUserId).setValue(true);
+                        onDestrykey = userID;
+                        isConnectionMatched(userID);
+                        likeCounts++;
 
-                    if (data_list.size() <= 0) {
-                        loadMoreData();
+                        if (data_list.size() <= 0) {
+                            loadMoreData();
+                        }
                     }
                 }
             }
@@ -176,15 +229,12 @@ public class Matches extends Fragment {
 
             @Override
             public void onScroll(float scrollProgressPercent) {
-                View view = flingContainer.getSelectedView();
-                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0.5 ? -scrollProgressPercent : 0);
-                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0.5 ? scrollProgressPercent : 0);
+                if (isOnCurrentFrag){
+                    View view = flingContainer.getSelectedView();
+                    view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0.5 ? -scrollProgressPercent : 0);
+                    view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0.5 ? scrollProgressPercent : 0);
 
-                if (scrollProgressPercent > 0.0) {
-                    Log.d("SUPERLIKE", "onScroll: time for a superLike");
                 }
-
-
             }
         });
 
@@ -193,11 +243,14 @@ public class Matches extends Fragment {
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                MatchModel card = (MatchModel) dataObject;
-                String userID = card.getUID();
-                Intent i = new Intent(getActivity(), profileViewer.class);
-                i.putExtra("UID", userID);
-                getActivity().startActivity(i);
+                if (isOnCurrentFrag){
+                    MatchModel card = (MatchModel) dataObject;
+                    String userID = card.getUID();
+                    Intent i = new Intent(getActivity(), profileViewer.class);
+                    i.putExtra("UID", userID);
+                    getActivity().startActivity(i);
+                }
+
             }
         });
     }
@@ -210,11 +263,15 @@ public class Matches extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    String chatRoomId =  FirebaseDatabase.getInstance().getReference().child("Chat").push().getKey();
+                    String chatRoomId = FirebaseDatabase.getInstance().getReference().child("Chat").push().getKey();
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Users");
-                    Toast.makeText(getActivity(), "Its a match", Toast.LENGTH_LONG).show();
                     db.child(userID).child("matches").child(currentUserId).setValue(chatRoomId);
                     db.child(currentUserId).child("matches").child(userID).setValue(chatRoomId);
+                    Toast.makeText(getActivity(), "Its a match", Toast.LENGTH_LONG).show();
+
+                    editor.putBoolean("isMatchedUsersExist",false);
+                    editor.commit();
+
                 }
             }
 
@@ -224,6 +281,8 @@ public class Matches extends Fragment {
             }
         });
     }
+
+
 
     private void left() {
         try {
@@ -289,11 +348,13 @@ public class Matches extends Fragment {
 
     }
 
-    private void loadData() {
+    public void loadData() {
         reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists() && !dataSnapshot.child("connections").child("skip").hasChild(currentUserId) && !dataSnapshot.child("connections").child("like").hasChild(currentUserId) && !dataSnapshot.child("gender").getValue().toString().equals(currentUserGender)) {
+                currentAge = Integer.parseInt(String.valueOf(dataSnapshot.child("age").getValue()));
+                if (dataSnapshot.exists() && !dataSnapshot.child("connections").child("skip").hasChild(currentUserId) && !dataSnapshot.child("connections").child("like").hasChild(currentUserId) && !dataSnapshot.child("gender").getValue().toString().equals(currentUserGender)
+                        && currentAge >= minAge && currentAge <= maxAge) {
                     MatchModel item = new MatchModel(dataSnapshot.child("fname").getValue().toString(), dataSnapshot.child("profileImages").child("one").getValue().toString(), dataSnapshot.getKey(), dataSnapshot.child("dob").getValue().toString());
                     data_list.add(item);
                     recordKey(data_list.size());
@@ -337,7 +398,8 @@ public class Matches extends Fragment {
         db.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists() && !dataSnapshot.child("connections").child("skip").hasChild(currentUserId) && !dataSnapshot.child("connections").child("like").hasChild(currentUserId) && !dataSnapshot.child("gender").getValue().toString().equals(currentUserGender)) {
+                currentAge = Integer.parseInt(String.valueOf(dataSnapshot.child("age").getValue()));
+                if (dataSnapshot.exists() && !dataSnapshot.child("connections").child("skip").hasChild(currentUserId) && !dataSnapshot.child("connections").child("like").hasChild(currentUserId) && !dataSnapshot.child("gender").getValue().toString().equals(currentUserGender) && currentAge >= minAge && currentAge <= maxAge) {
                     MatchModel item = new MatchModel(dataSnapshot.child("fname").getValue().toString(), dataSnapshot.child("profileImages").child("one").getValue().toString(), dataSnapshot.getKey(), dataSnapshot.child("dob").getValue().toString());
                     data_list.add(item);
                     adapter.notifyDataSetChanged();
@@ -371,6 +433,7 @@ public class Matches extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
         if (onDestrykey.equals("null")) {
             return;
         } else {
@@ -405,6 +468,7 @@ public class Matches extends Fragment {
         likeCounts = sharedPreferences.getInt("likeCounts", 0);
         mTimeLeftInMillis = sharedPreferences.getLong("timeleft", START_TIME_IN_MILLIS);
         isTimerRunning = sharedPreferences.getBoolean("timer", false);
+
     }
 
     @Override
@@ -460,6 +524,8 @@ public class Matches extends Fragment {
 
 
     }
+
+
 
     private void resetTimer() {
         mTimeLeftInMillis = START_TIME_IN_MILLIS;

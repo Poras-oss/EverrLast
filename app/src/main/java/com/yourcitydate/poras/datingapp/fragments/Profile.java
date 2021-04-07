@@ -39,7 +39,6 @@ public class Profile extends Fragment {
     ImageView profilePic;
     private DatabaseReference databaseReference;
     private String UID;
-    private ArrayList<String> data;
     private final String SharedPrefs = "prefs";
     private SharedPreferences sharedPreferences;
     ImageButton dropDownToggle;
@@ -61,7 +60,6 @@ public class Profile extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         sharedPreferences = getActivity().getSharedPreferences(SharedPrefs,getActivity().MODE_PRIVATE);
         UID = sharedPreferences.getString("UID","0");
-        data = new ArrayList<>();
         //Assigning views
         Name = (TextView)view.findViewById(R.id.NAME);
         Age = (TextView)view.findViewById(R.id.AGE);

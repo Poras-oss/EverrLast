@@ -66,44 +66,63 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/message_Recycler"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/message_Recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/animationView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout2"
+            tools:listitem="@layout/message_layout_left" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <EditText
-            android:id="@+id/message_edittext"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="0.8"
-            android:background="@drawable/phoneinputbg"
-            android:hint="Type your message here ..."
-            android:padding="12dp" />
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:padding="5dp"
+            android:weightSum="1"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/msgSendButton"
-            android:layout_width="50dp"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/colorAccent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_action_send" />
-    </LinearLayout>
+            <EditText
+                android:id="@+id/message_edittext"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_weight="0.8"
+                android:background="@drawable/chat_input_bg"
+                android:fontFamily="sans-serif"
+                android:hint="Type your message here ..."
+                android:padding="12dp" />
+
+            <ImageButton
+                android:id="@+id/msgSendButton"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.2"
+                android:background="@drawable/chat_send_button"
+                android:padding="12dp"
+                android:src="@drawable/ic_action_send" />
+        </LinearLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:visibility="gone"
+            app:lottie_rawRes="@raw/typinganim" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

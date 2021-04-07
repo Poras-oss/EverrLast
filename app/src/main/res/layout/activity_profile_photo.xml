@@ -42,7 +42,7 @@
         app:srcCompat="@drawable/ic_chevron_right_black_24dp"
         tools:ignore="VectorDrawableCompat" />
 
-    <ImageButton
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/Photo_back"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -77,6 +77,8 @@
         android:id="@+id/profileImageView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxHeight="350dp"
+        tools:layout_height="250dp"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginTop="32dp"
