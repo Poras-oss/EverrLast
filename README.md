@@ -2,8 +2,6 @@
 “EverrLast” is an android application where people can meet and chat with each other.
 
 # Features
-Easy contact between blood donor and blood recipient through this android application.<br>
-Included:
 - Chat 
 - Message Request(Premium)
 - Message Request from map(Premium)
